@@ -1,8 +1,17 @@
 package blacksky.server.entities
 
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Lob
+import jakarta.persistence.Table
 import java.util.*
 
-data class University(val id: UUID, val name: String)
+@Table(name = "university")
+@Entity
+open class University(
+    @Id val id: UUID,
+    @Lob val name: String,
+)
 
 data class Department(val id: UUID, val name: String, val universityId: UUID)
 
