@@ -9,11 +9,17 @@ import java.util.*
 @Table(name = "university")
 @Entity
 open class University(
-    @Id val id: UUID,
-    @Lob val name: String,
+    @Id open val id: UUID,
+    @Lob open val name: String,
 )
 
-data class Department(val id: UUID, val name: String, val universityId: UUID)
+@Table(name = "department")
+@Entity
+open class Department(
+    @Id open val id: UUID,
+    @Lob open val name: String,
+    open val universityId: UUID,
+)
 
 interface IUser {
     val id: UUID
