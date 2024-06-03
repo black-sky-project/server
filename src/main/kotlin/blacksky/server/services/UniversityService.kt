@@ -19,6 +19,9 @@ class UniversityService @Autowired constructor(private val universityRepository:
     fun getUniversity(id: UUID) =
         universityRepository.findByIdOrNull(id) ?: throw NotFoundException("No university with such id")
 
+    fun getUniversity(name: String) = universityRepository.findAll().first { it.name.lowercase() == name.lowercase() }
+        ?: throw NotFoundException("No university with such name")
+
     fun createUniversity(name: String) = with(University(UUID.randomUUID(), name)) {
         if (universityRepository.findAll()
                 .any { it.name.lowercase() == name.lowercase() }
