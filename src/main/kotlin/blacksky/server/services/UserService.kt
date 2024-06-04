@@ -64,6 +64,13 @@ class UserService @Autowired constructor(
     fun getMentorsByUniversity(universityId: UUID) =
         departmentService.getByUniversity(universityId).map { it.mentors }.flatten()
 
+    fun getUserById(userId: UUID) = when {
+        studentRepository.existsById(userId) -> studentRepository.findById(userId).get()
+        mentorRepository.existsById(userId) -> mentorRepository.findById(userId).get()
+        adminRepository.existsById(userId) -> adminRepository.findById(userId).get()
+        else -> throw NotFoundException("No user with such id")
+    }
+
     fun isLoginAvailable(login: String) = getAllUsers().none { it.login.lowercase() == login.lowercase() }
 
     fun createStudent(dto: PostStudentDto) = departmentService.getById(dto.departmentId).let { department ->
