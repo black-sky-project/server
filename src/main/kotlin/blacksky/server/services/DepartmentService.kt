@@ -2,8 +2,10 @@ package blacksky.server.services
 
 import blacksky.server.entities.Department
 import blacksky.server.exceptions.ConflictException
+import blacksky.server.exceptions.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -19,24 +21,26 @@ fun Department.toDto() = DepartmentDto(id, name, university.id)
 class DepartmentService @Autowired constructor(
     private val departmentRepository: DepartmentRepository, private val universityService: UniversityService
 ) {
-    fun getAllDepartments(): List<Department> = departmentRepository.findAll()
+    fun getAll(): List<Department> = departmentRepository.findAll()
 
-    fun getUniversityDepartments(universityId: UUID) = universityService.getUniversityById(universityId).departments
+    fun getById(id: UUID) =
+        departmentRepository.findByIdOrNull(id) ?: throw NotFoundException("No department with such id")
 
-    fun createDepartment(dto: PostDepartmentDto) =
-        universityService.getUniversityById(dto.universityId).let { university ->
-            Department(UUID.randomUUID(), dto.name, university).also { department ->
-                with(university.departments) {
-                    if (any { it.id == department.id }) throw ConflictException(
-                        "Department with such name already exists in the university"
-                    )
-                    add(department)
-                }
-                departmentRepository.flush()
+    fun getByUniversity(universityId: UUID) = universityService.getById(universityId).departments
+
+    fun create(dto: PostDepartmentDto) = universityService.getById(dto.universityId).let { university ->
+        Department(UUID.randomUUID(), dto.name, university).also { department ->
+            with(university.departments) {
+                if (any { it.name.lowercase() == department.name.lowercase() }) throw ConflictException(
+                    "Department with such name already exists in the university"
+                )
+                add(department)
             }
+            departmentRepository.flush()
         }
+    }
 
-    fun deleteDepartment(id: UUID) = with(departmentRepository) {
+    fun delete(id: UUID) = with(departmentRepository) {
         deleteById(id)
         flush()
     }

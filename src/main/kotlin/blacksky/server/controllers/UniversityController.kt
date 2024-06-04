@@ -1,6 +1,5 @@
 package blacksky.server.controllers
 
-import blacksky.server.exceptions.BadRequestException
 import blacksky.server.services.UniversityService
 import blacksky.server.services.toDto
 import org.springframework.web.bind.annotation.*
@@ -10,11 +9,11 @@ import java.util.*
 @RequestMapping("/api/v1/universities")
 class UniversityController(private val universityService: UniversityService) {
     @GetMapping("/get/list")
-    fun getAllUniversities() = universityService.getAllUniversities().map { it.toDto() }
+    fun getList() = universityService.getAll().map { it.toDto() }
 
     @PostMapping("/new")
-    fun postUniversity(@RequestBody name: String) = universityService.createUniversity(name).toDto()
+    fun post(@RequestBody name: String) = universityService.create(name).toDto()
 
     @DeleteMapping("/delete")
-    fun deleteUniversity(@RequestParam id: UUID) = universityService.deleteUniversity(id)
+    fun delete(@RequestParam id: UUID) = universityService.delete(id)
 }

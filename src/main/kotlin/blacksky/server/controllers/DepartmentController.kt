@@ -10,14 +10,14 @@ import java.util.*
 @RequestMapping("/api/v1/departments")
 class DepartmentController(private val departmentService: DepartmentService) {
     @GetMapping("/get/list")
-    fun getDepartments(@RequestParam universityId: UUID?) = when {
-        universityId != null -> departmentService.getUniversityDepartments(universityId).map { it.toDto() }
-        else -> departmentService.getAllDepartments().map { it.toDto() }
+    fun getList(@RequestParam universityId: UUID?) = when {
+        universityId != null -> departmentService.getByUniversity(universityId).map { it.toDto() }
+        else -> departmentService.getAll().map { it.toDto() }
     }
 
     @PostMapping("/new")
-    fun postDepartment(@RequestBody name: PostDepartmentDto) = departmentService.createDepartment(name).toDto()
+    fun post(@RequestBody dto: PostDepartmentDto) = departmentService.create(dto).toDto()
 
     @DeleteMapping("/delete")
-    fun deleteDepartment(@RequestParam id: UUID) = departmentService.deleteDepartment(id)
+    fun delete(@RequestParam id: UUID) = departmentService.delete(id)
 }

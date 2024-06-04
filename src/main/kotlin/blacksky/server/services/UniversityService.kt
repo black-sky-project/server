@@ -17,12 +17,12 @@ fun University.toDto() = UniversityDto(id, name)
 
 @Service
 class UniversityService @Autowired constructor(private val universityRepository: UniversityRepository) {
-    fun getAllUniversities(): List<University> = universityRepository.findAll()
+    fun getAll(): List<University> = universityRepository.findAll()
 
-    fun getUniversityById(id: UUID) =
+    fun getById(id: UUID) =
         universityRepository.findByIdOrNull(id) ?: throw NotFoundException("University with such id not found")
 
-    fun createUniversity(name: String) = University(UUID.randomUUID(), name).also {
+    fun create(name: String) = University(UUID.randomUUID(), name).also {
         with(universityRepository) {
             if (findAll().any { it.name.lowercase() == name.lowercase() }) throw ConflictException(
                 "University with such name already exists"
@@ -31,7 +31,7 @@ class UniversityService @Autowired constructor(private val universityRepository:
         }
     }
 
-    fun deleteUniversity(id: UUID) = with(universityRepository) {
+    fun delete(id: UUID) = with(universityRepository) {
         deleteById(id)
         flush()
     }
