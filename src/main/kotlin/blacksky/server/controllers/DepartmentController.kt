@@ -9,9 +9,9 @@ import java.util.*
 @RestController
 @RequestMapping("/api/v1/departments")
 class DepartmentController(private val departmentService: DepartmentService) {
-    @GetMapping("/get")
-    fun getAllDepartments(@RequestParam universityId: UUID?) = when {
-        universityId != null -> departmentService.getUniversityDepartments(universityId)
+    @GetMapping("/get/list")
+    fun getDepartments(@RequestParam universityId: UUID?) = when {
+        universityId != null -> departmentService.getUniversityDepartments(universityId).map { it.toDto() }
         else -> departmentService.getAllDepartments().map { it.toDto() }
     }
 

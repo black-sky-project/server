@@ -1,9 +1,6 @@
 package blacksky.server.entities
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Lob
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.util.*
 
 @Table(name = "university")
@@ -11,6 +8,12 @@ import java.util.*
 open class University(
     @Id open val id: UUID,
     @Lob open val name: String,
+    @OneToMany(
+        mappedBy = "university",
+        fetch = FetchType.LAZY,
+        orphanRemoval = true,
+        cascade = [CascadeType.ALL]
+    ) open val departments: MutableList<Department> = mutableListOf()
 )
 
 @Table(name = "department")
@@ -18,7 +21,7 @@ open class University(
 open class Department(
     @Id open val id: UUID,
     @Lob open val name: String,
-    open val universityId: UUID,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "university_id") open val university: University
 )
 
 interface IUser {

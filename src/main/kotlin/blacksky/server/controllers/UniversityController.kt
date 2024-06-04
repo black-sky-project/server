@@ -9,7 +9,7 @@ import java.util.*
 @RestController
 @RequestMapping("/api/v1/universities")
 class UniversityController(private val universityService: UniversityService) {
-    @GetMapping("/get")
+    @GetMapping("/get/list")
     fun getAllUniversities() = universityService.getAllUniversities().map { it.toDto() }
 
     @PostMapping("/new")

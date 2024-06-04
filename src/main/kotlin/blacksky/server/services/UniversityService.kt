@@ -2,7 +2,7 @@ package blacksky.server.services
 
 import blacksky.server.entities.University
 import blacksky.server.exceptions.ConflictException
-import blacksky.server.exceptions.InternalErrorException
+import blacksky.server.exceptions.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -19,11 +19,15 @@ fun University.toDto() = UniversityDto(id, name)
 class UniversityService @Autowired constructor(private val universityRepository: UniversityRepository) {
     fun getAllUniversities(): List<University> = universityRepository.findAll()
 
-    fun createUniversity(name: String) = University(UUID.randomUUID(), name).let {
+    fun getUniversityById(id: UUID) =
+        universityRepository.findByIdOrNull(id) ?: throw NotFoundException("University with such id not found")
+
+    fun createUniversity(name: String) = University(UUID.randomUUID(), name).also {
         with(universityRepository) {
-            if (findAll().any { it.name.lowercase() == name.lowercase() }) throw ConflictException("University with such name already exists")
+            if (findAll().any { it.name.lowercase() == name.lowercase() }) throw ConflictException(
+                "University with such name already exists"
+            )
             saveAndFlush(it)
-            findByIdOrNull(it.id) ?: throw InternalErrorException("Couldn't create university")
         }
     }
 
