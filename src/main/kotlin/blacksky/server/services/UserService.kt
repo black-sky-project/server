@@ -5,6 +5,7 @@ import blacksky.server.exceptions.ConflictException
 import blacksky.server.exceptions.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -50,6 +51,9 @@ class UserService @Autowired constructor(
     fun getAllMentors(): List<Mentor> = mentorRepository.findAll()
     fun getAllAdmins(): List<Admin> = adminRepository.findAll()
     fun getAllUsers(): List<IUser> = getAllStudents() + getAllMentors() + getAllAdmins()
+
+    fun getMentorById(id: UUID) =
+        mentorRepository.findByIdOrNull(id) ?: throw NotFoundException("No mentor with such id")
 
     fun getStudentsByDepartment(departmentId: UUID) = departmentService.getById(departmentId).students
     fun getMentorsByDepartment(departmentId: UUID) = departmentService.getById(departmentId).mentors

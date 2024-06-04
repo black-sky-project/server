@@ -3,8 +3,10 @@ package blacksky.server.services
 import blacksky.server.entities.Course
 import blacksky.server.entities.Degree
 import blacksky.server.exceptions.ConflictException
+import blacksky.server.exceptions.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -23,6 +25,8 @@ class CourseService @Autowired constructor(
     private val universityService: UniversityService
 ) {
     fun getAll(): List<Course> = courseRepository.findAll()
+
+    fun getById(id: UUID) = courseRepository.findByIdOrNull(id) ?: throw NotFoundException("No course with such id")
 
     fun getByDepartment(departmentId: UUID) = departmentService.getById(departmentId).courses
 

@@ -31,6 +31,9 @@ open class Mentor(
     @Lob override val passwordHash: String,
     @Lob open val bio: String,
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "department_id") open val department: Department,
+    @OneToMany(
+        mappedBy = "mentor", fetch = FetchType.LAZY, orphanRemoval = true, cascade = [CascadeType.ALL]
+    ) open val offers: MutableList<Offer> = mutableListOf()
 ) : IUser
 
 
