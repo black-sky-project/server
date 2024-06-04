@@ -22,7 +22,7 @@ data class PostMentorDto(
     val login: String, val password: String, val name: String, val bio: String, val departmentId: UUID
 )
 
-data class PostAdminDto(val login: String, val password: String, val name: String, val bio: String)
+data class PostAdminDto(val login: String, val password: String, val name: String)
 
 data class UserDto(val id: UUID, val login: String, val name: String)
 

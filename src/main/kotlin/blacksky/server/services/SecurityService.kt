@@ -1,5 +1,6 @@
 package blacksky.server.services
 
+import blacksky.server.entities.Admin
 import blacksky.server.entities.IUser
 import blacksky.server.exceptions.ForbiddenException
 import blacksky.server.exceptions.UnauthorizedException
@@ -21,6 +22,9 @@ class SecurityService @Autowired constructor(val userService: UserService) {
     fun login(dto: LoginDto) = userService.getAllUsers().firstOrNull { it.login == dto.login }
         ?.takeIf { it.passwordHash == hashPassword(dto.password) }?.let { makeToken(it) }
         ?: throw ForbiddenException("Bad credentials")
+
+    fun checkAdminRights(token: String) =
+        getUserByToken(token).takeIf { it is Admin }?.run {} ?: throw UnauthorizedException("You are not admin")
 
     private fun makeToken(user: IUser) = UUID.randomUUID().toString().also { userIdByToken[it] = user.id }
 }

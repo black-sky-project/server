@@ -1,5 +1,6 @@
 package blacksky.server.controllers
 
+import blacksky.server.services.SecurityService
 import blacksky.server.services.UniversityService
 import blacksky.server.services.toDto
 import org.springframework.web.bind.annotation.*
@@ -7,13 +8,17 @@ import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/universities")
-class UniversityController(private val universityService: UniversityService) {
+class UniversityController(
+    private val universityService: UniversityService, private val securityService: SecurityService
+) {
     @GetMapping("/get/list")
-    fun getList() = universityService.getAll().map { it.toDto() }
+    fun getList(@RequestHeader token: String) = universityService.getAll().map { it.toDto() }
 
     @PostMapping("/new")
-    fun post(@RequestBody name: String) = universityService.create(name).toDto()
+    fun post(@RequestHeader token: String, @RequestBody name: String) =
+        securityService.checkAdminRights(token).run { universityService.create(name).toDto() }
 
     @DeleteMapping("/delete")
-    fun delete(@RequestParam id: UUID) = universityService.delete(id)
+    fun delete(@RequestHeader token: String, @RequestParam id: UUID) =
+        securityService.checkAdminRights(token).run { universityService.delete(id) }
 }
