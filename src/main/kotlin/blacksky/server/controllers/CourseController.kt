@@ -12,10 +12,12 @@ import java.util.*
 class CourseController(private val courseService: CourseService, private val securityService: SecurityService) {
     @GetMapping("/get/list")
     fun getList(@RequestHeader token: String, @RequestParam departmentId: UUID?, @RequestParam universityId: UUID?) =
-        when {
-            departmentId != null -> courseService.getByDepartment(departmentId).map { it.toDto() }
-            universityId != null -> courseService.getByUniversity(universityId).map { it.toDto() }
-            else -> courseService.getAll().map { it.toDto() }
+        securityService.getUserByToken(token).run {
+            when {
+                departmentId != null -> courseService.getByDepartment(departmentId).map { it.toDto() }
+                universityId != null -> courseService.getByUniversity(universityId).map { it.toDto() }
+                else -> courseService.getAll().map { it.toDto() }
+            }
         }
 
     @PostMapping("/new")

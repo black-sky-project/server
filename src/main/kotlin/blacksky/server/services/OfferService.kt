@@ -1,8 +1,10 @@
 package blacksky.server.services
 
 import blacksky.server.entities.Offer
+import blacksky.server.exceptions.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -29,6 +31,8 @@ class OfferService @Autowired constructor(
     fun getByDepartment(departmentId: UUID) = courseService.getByDepartment(departmentId).map { it.offers }.flatten()
 
     fun getByUniversity(universityId: UUID) = courseService.getByUniversity(universityId).map { it.offers }.flatten()
+
+    fun getById(id: UUID) = offerRepository.findByIdOrNull(id) ?: throw NotFoundException("No such offer")
 
     fun create(dto: PostOfferDto) = courseService.getById(dto.courseId).let { course ->
         userService.getMentorById(dto.mentorId).let { mentor ->

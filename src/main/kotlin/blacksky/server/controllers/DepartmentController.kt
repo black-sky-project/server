@@ -13,10 +13,13 @@ class DepartmentController(
     private val departmentService: DepartmentService, private val securityService: SecurityService
 ) {
     @GetMapping("/get/list")
-    fun getList(@RequestHeader token: String, @RequestParam universityId: UUID?) = when {
-        universityId != null -> departmentService.getByUniversity(universityId).map { it.toDto() }
-        else -> departmentService.getAll().map { it.toDto() }
-    }
+    fun getList(@RequestHeader token: String, @RequestParam universityId: UUID?) =
+        securityService.getUserByToken(token).run {
+            when {
+                universityId != null -> departmentService.getByUniversity(universityId).map { it.toDto() }
+                else -> departmentService.getAll().map { it.toDto() }
+            }
+        }
 
     @PostMapping("/new")
     fun post(@RequestHeader token: String, @RequestBody dto: PostDepartmentDto) =

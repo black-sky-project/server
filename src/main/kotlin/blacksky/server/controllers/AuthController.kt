@@ -11,6 +11,6 @@ class AuthController(private val securityService: SecurityService) {
     @PostMapping("/login")
     fun login(@RequestBody dto: LoginDto) = securityService.login(dto)
 
-    @PostMapping("/getMe")
+    @GetMapping("/getMe")
     fun getMe(@RequestHeader token: String) = securityService.getUserByToken(token).toDto()
 }

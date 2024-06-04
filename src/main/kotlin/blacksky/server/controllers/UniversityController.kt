@@ -12,7 +12,8 @@ class UniversityController(
     private val universityService: UniversityService, private val securityService: SecurityService
 ) {
     @GetMapping("/get/list")
-    fun getList(@RequestHeader token: String) = universityService.getAll().map { it.toDto() }
+    fun getList(@RequestHeader token: String) =
+        securityService.getUserByToken(token).run { universityService.getAll().map { it.toDto() } }
 
     @PostMapping("/new")
     fun post(@RequestHeader token: String, @RequestBody name: String) =

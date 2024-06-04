@@ -10,19 +10,23 @@ class UserController(private val userService: UserService, private val securityS
     @GetMapping("/get/list/students")
     fun getStudents(
         @RequestHeader token: String, @RequestParam departmentId: UUID?, @RequestParam universityId: UUID?
-    ) = when {
-        departmentId != null -> userService.getStudentsByDepartment(departmentId).map { it.toDto() }
-        universityId != null -> userService.getStudentsByUniversity(universityId).map { it.toDto() }
-        else -> userService.getAllStudents().map { it.toDto() }
+    ) = securityService.getUserByToken(token).run {
+        when {
+            departmentId != null -> userService.getStudentsByDepartment(departmentId).map { it.toDto() }
+            universityId != null -> userService.getStudentsByUniversity(universityId).map { it.toDto() }
+            else -> userService.getAllStudents().map { it.toDto() }
+        }
     }
 
     @GetMapping("/get/list/mentors")
     fun getAllMentors(
         @RequestHeader token: String, @RequestParam departmentId: UUID?, @RequestParam universityId: UUID?
-    ) = when {
-        departmentId != null -> userService.getMentorsByDepartment(departmentId).map { it.toDto() }
-        universityId != null -> userService.getMentorsByUniversity(universityId).map { it.toDto() }
-        else -> userService.getAllMentors().map { it.toDto() }
+    ) = securityService.getUserByToken(token).run {
+        when {
+            departmentId != null -> userService.getMentorsByDepartment(departmentId).map { it.toDto() }
+            universityId != null -> userService.getMentorsByUniversity(universityId).map { it.toDto() }
+            else -> userService.getAllMentors().map { it.toDto() }
+        }
     }
 
     @GetMapping("/get/list/admins")
