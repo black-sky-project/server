@@ -8,7 +8,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/courses")
-class CoursesController(private val courseService: CourseService) {
+class CourseController(private val courseService: CourseService) {
     @GetMapping("/get/list")
     fun getList(@RequestParam departmentId: UUID?, @RequestParam universityId: UUID?) = when {
         departmentId != null -> courseService.getByDepartment(departmentId).map { it.toDto() }

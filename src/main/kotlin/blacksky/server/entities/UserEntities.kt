@@ -1,31 +1,44 @@
 package blacksky.server.entities
 
+import jakarta.persistence.*
 import java.util.*
 
 interface IUser {
     val id: UUID
     val login: String
     val name: String
+    val passwordHash: String
 }
 
-data class Student(
-    override val id: UUID,
-    override val login: String,
-    override val name: String,
-    val universityId: UUID,
-    val departmentId: UUID,
-    val acquiringDegree: Degree
+@Table(name = "student")
+@Entity
+open class Student(
+    @Id override val id: UUID,
+    @Lob override val login: String,
+    @Lob override val name: String,
+    @Lob override val passwordHash: String,
+    open val acquiringDegree: Degree,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "department_id") open val department: Department,
 ) : IUser
 
-data class Mentor(
-    override val id: UUID,
-    override val login: String,
-    override val name: String,
-    val universityId: UUID,
-    val departmentId: UUID,
-    val bio: String
+
+@Table(name = "mentor")
+@Entity
+open class Mentor(
+    @Id override val id: UUID,
+    @Lob override val login: String,
+    @Lob override val name: String,
+    @Lob override val passwordHash: String,
+    @Lob open val bio: String,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "department_id") open val department: Department,
 ) : IUser
 
-data class Admin(
-    override val id: UUID, override val login: String, override val name: String, val approvedById: UUID,
+
+@Table(name = "admin")
+@Entity
+open class Admin(
+    @Id override val id: UUID,
+    @Lob override val login: String,
+    @Lob override val name: String,
+    @Lob override val passwordHash: String,
 ) : IUser

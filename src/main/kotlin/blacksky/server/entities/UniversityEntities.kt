@@ -19,7 +19,13 @@ open class Department(
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "university_id") open val university: University,
     @OneToMany(
         mappedBy = "department", fetch = FetchType.LAZY, orphanRemoval = true, cascade = [CascadeType.ALL]
-    ) open val courses: MutableList<Course> = mutableListOf()
+    ) open val courses: MutableList<Course> = mutableListOf(),
+    @OneToMany(
+        mappedBy = "department", fetch = FetchType.LAZY, orphanRemoval = true, cascade = [CascadeType.ALL]
+    ) open val students: MutableList<Student> = mutableListOf(),
+    @OneToMany(
+        mappedBy = "department", fetch = FetchType.LAZY, orphanRemoval = true, cascade = [CascadeType.ALL]
+    ) open val mentors: MutableList<Mentor> = mutableListOf()
 )
 
 enum class Degree { Bachelor, Master }
